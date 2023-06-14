@@ -19,34 +19,31 @@ const Card = (article) => {
   //   </div>
   // </div>
   //
-  const cardWrapper = document.createElement('div');
-  const cardHeadline = document.createElement('div');
-  const cardAuthorWrap = document.createElement('div');
-  const cardImgContainer = document.createElement('div');
-  const cardImage = document.createElement('img');
-  const cardAuthor = document.createElement('span');
+  const cardWrapper = document.createElement("div");
+  const cardHeadline = document.createElement("div");
+  const cardAuthorWrap = document.createElement("div");
+  const cardImgContainer = document.createElement("div");
+  const cardImage = document.createElement("img");
+  const cardAuthor = document.createElement("span");
 
-  cardWrapper.classList.add('card');
-  cardHeadline.classList.add('headline');
-  cardAuthorWrap.classList.add('author');
-  cardImgContainer.classList.add('img-container');
-  
-  //article = {headline: headline, authorPhoto: authorPhoto, authorName: authorName};
+  cardWrapper.classList.add("card");
+  cardHeadline.classList.add("headline");
+  cardAuthorWrap.classList.add("author");
+  cardImgContainer.classList.add("img-container");
 
   cardHeadline.textContent = article.headline;
   cardImage.src = article.authorPhoto;
-  cardAuthor.textContent = article.authorName;
+  cardAuthor.textContent = `By ${article.authorName}`;
 
   cardWrapper.appendChild(cardHeadline);
   cardWrapper.appendChild(cardAuthorWrap);
   cardAuthorWrap.appendChild(cardImgContainer);
-  cardAuthorWrap.appendChild(cardAuthor);
   cardImgContainer.appendChild(cardImage);
+  cardAuthorWrap.appendChild(cardAuthor);
 
-
-  cardWrapper.addEventListener('click', () => {
-    console.log(headline);
-  })
+  cardWrapper.addEventListener("click", () => {
+    console.log(article.headline);
+  });
 
   return cardWrapper;
 }
@@ -61,20 +58,27 @@ const cardAppender = (selector) => {
   // Append each card to the element in the DOM that matches the selector passed to the function.
   //
   const toAppend = document.querySelector(selector);
-  axios.get('http://localhost:5001/api/articles')
-  .then(res => {
-    console.log(res);
-    res.data.articles.forEach(article => {
-      toAppend.appendChild(Card(article));
-    });
-  })
-  .catch(err => {
-    console.log('Card API request failed');
-  })
-  .finally(() => {
-    console.log('Card API request completed');
-  });
+  axios
+    .get("http://localhost:5001/api/articles")
+    .then((res) => {
+      const articles = res.data.articles;
+      for(const topic in articles){
+        const topicObj = articles[topic];
 
+        for(const article of topicObj){
+          const card = Card(article);
+          toAppend.appendChild(card);
+        }
+      }
+
+      console.log("API request success");
+    })
+    .catch((error) => {
+      console.log("API request failed", error);
+    })
+    .finally(() => {
+      console.log("API request complete.");
+    });
 }
 
 export { Card, cardAppender }

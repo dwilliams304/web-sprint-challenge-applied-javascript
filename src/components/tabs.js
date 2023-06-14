@@ -41,10 +41,10 @@ const tabsAppender = (selector) => {
     toAppend.appendChild(Tabs(res.data.topics));
   })
   .catch(err => {
-    console.log('Error')
+    //console.log('Error')
   })
   .finally(() => {
-    console.log('API get complete.')
+    //console.log('API get complete.')
   });
 
 }
